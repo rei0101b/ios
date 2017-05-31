@@ -19,15 +19,19 @@ class ViewController: UIViewController {
     let wifiNotification = NSNotification.Name("wifiNotification")
     let reachability = Reachability()!
     var wifiname: String = ""
+    var flag = false
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        // 0.3杪ごとにSSIDの変化を監視
+        Timer.scheduledTimer(timeInterval: 0.3, target: self, selector: #selector(self.getWiFiName(notification:)), userInfo: nil, repeats: true)
     }
     
     override func viewWillAppear(_ animated: Bool) {
         NotificationCenter.default.addObserver(self, selector: #selector(self.reachabilityChanged), name: ReachabilityChangedNotification, object: reachability)
         do {
             try reachability.startNotifier()
+            getWiFiName(notification: nil)
         } catch {
             print("could not start reachability notifier")
         }
@@ -58,13 +62,19 @@ class ViewController: UIViewController {
     
     // 現在接続中のwifiが "wi2premium"であればWifi接続メソッドを投げる
     func wifiControl(){
-        print(wifiname)
-        if wifiname == "Wi2premium" {
+        print("wifiname: \(wifiname)")
+        if wifiname == "Wi2premium" && flag == false  {
             wi2Login()
-        } else {
+            print("============== Connect Wi2Wifi =================")
+            flag = true
+        } else if wifiname == "Wi2premium" && flag == true {
+            print("============== Do not do wi2Login(), just stay ==================")
+            return
+        }else {
             print("============== This is not Wi2premium =================")
             print("============== Logout Wi2WiFi ==============")
             wi2Logout()
+            flag = false
         }
     }
 
@@ -134,11 +144,11 @@ class ViewController: UIViewController {
 
     // 接続ネットワークを探す
     func reachabilityChanged(note: NSNotification) {
+        NotificationCenter.default.post(name: wifiNotification, object: nil)
         let reachability = note.object as! Reachability
         if reachability.isReachable {
             if reachability.isReachableViaWiFi {
                 networkName.text = "WiFi"
-                getWiFiName(notification: nil)
             } else {
                 networkName.text = "LTE/3G"
             }
