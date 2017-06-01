@@ -244,6 +244,8 @@ class ViewController: UIViewController {
     // "接続"を押した時の処理
     @IBAction func connectWiFi(_ sender: Any) {
         print("============== 接続 ===============")
+        loginFlag = false
+        pushLogoutFlag = false
         getWiFiName()
     }
     
