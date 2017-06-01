@@ -27,14 +27,14 @@ class ViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         // 0.3杪ごとにSSIDの変化を監視
-        Timer.scheduledTimer(timeInterval: 2, target: self, selector: #selector(self.getWiFiName), userInfo: nil, repeats: true)
+        Timer.scheduledTimer(timeInterval: 2.0, target: self, selector: #selector(self.getWiFiName), userInfo: nil, repeats: true)
     }
     
     override func viewWillAppear(_ animated: Bool) {
         NotificationCenter.default.addObserver(self, selector: #selector(self.reachabilityChanged), name: ReachabilityChangedNotification, object: reachability)
         do {
             try reachability.startNotifier()
-            getWiFiName()
+//            getWiFiName()
         } catch {
             print("could not start reachability notifier")
         }
@@ -66,22 +66,48 @@ class ViewController: UIViewController {
     func wifiControl(){
         print("wifiname: \(wifiname)")
         print("Loginflag:\(loginFlag)")
+        print("pushLogoutflag: \(pushLogoutFlag)")
         print("Logoutflag:\(logoutFlag)")
-        print("wi2Logoutflag: \(pushLogoutFlag)")
         
-        if wifiname == "Wi2premium" { //　Wi2premiumのWifiに接続認証処理待ち、Wi2premiumログイン未処理 → ログイン
+        
+//        if wifiname == "Wi2premium" { //　Wi2premiumのWifiに接続認証処理待ち、Wi2premiumログイン未処理 → ログイン
+//            if loginFlag == false {
+//                if pushLogoutFlag == true { //　Wi2premiumのWifiに接続認証処理待、手動ログアウト済み
+//                    if logoutFlag == true {
+//                        wi2Login()
+//                        print("============== Connect Wi2Wifi =================")
+//                        return
+//                    }
+//                    print("============= This is Wi2premium, after push '接続解除'")
+//                    return
+//                }
+//                wi2Login()
+//                print("============== Connect Wi2Wifi =================")
+//                return
+//            }
+//            print("============== Do not execute wi2Login(), Now Connecting 'Wi2premium' ==================")
+//            return
+        if wifiname == "Wi2premium" {
             if loginFlag == false {
-                if pushLogoutFlag == true { //　Wi2premiumのWifiに接続認証処理待、手動ログアウト済み
-                    if logoutFlag == true {
-                        wi2Login()
-                        print("============== Connect Wi2Wifi =================")
+                if logoutFlag == true {
+                    if pushLogoutFlag == true {
+                        print("============= This is Wi2premium, after push '接続解除'")
                         return
                     }
-                    print("============= This is Wi2premium, after push '接続解除'")
+                    print("============== Connect Wi2Wifi =================")
+                    wi2Login()
                     return
                 }
-                wi2Login()
+                if pushLogoutFlag == true {
+                    print("============== Do not execute wi2Login(), Now Connecting 'Wi2premium' ==================")
+                    return
+                }
                 print("============== Connect Wi2Wifi =================")
+                wi2Login()
+                return
+            }
+            if pushLogoutFlag == true {
+                print("============= This is Wi2premium, after push '接続解除'")
                 return
             }
             print("============== Do not execute wi2Login(), Now Connecting 'Wi2premium' ==================")
@@ -112,6 +138,7 @@ class ViewController: UIViewController {
         Alamofire.request(COOKIE_URL, method: .get).responseJSON { response -> Void in
             let res = response.response
             // Cookie保存
+            print("res: \(String(describing: res))")
             let get_cookies = HTTPCookie.cookies(withResponseHeaderFields: res?.allHeaderFields as! [String : String], for: (res?.url)! )
             
             for i in 0 ..< get_cookies.count {
