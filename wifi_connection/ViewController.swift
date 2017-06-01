@@ -55,6 +55,11 @@ class ViewController: UIViewController {
             print("my network is \(String(describing: wifiname))")
             wifiControl()
         } else {
+            if logoutFlag == false {
+                print("============== This is not Wi2premium =================")
+                print("============== Logout Wi2WiFi ==============")
+                wi2Logout()
+            }
             wifiName.text = "なし"
             print("no wifi name")
             pushLogoutFlag = false
@@ -238,8 +243,10 @@ class ViewController: UIViewController {
     
     // "接続"を押した時の処理
     @IBAction func connectWiFi(_ sender: Any) {
+        print("============== 接続 ===============")
         getWiFiName()
     }
+    
     //  "接続解除を押した時の処理"
     @IBAction func disConnectWiFi(_ sender: Any) {
         wi2Logout()

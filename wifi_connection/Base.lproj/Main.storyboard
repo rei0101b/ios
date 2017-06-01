@@ -30,7 +30,7 @@
                                     <color key="titleColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                                 </state>
                                 <connections>
-                                    <action selector="connectWiFi:" destination="BYZ-38-t0r" eventType="touchUpInside" id="EC7-du-E89"/>
+                                    <action selector="connectWiFi:" destination="BYZ-38-t0r" eventType="touchUpInside" id="Na2-aY-9vt"/>
                                 </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="PkQ-C8-ZMU">
