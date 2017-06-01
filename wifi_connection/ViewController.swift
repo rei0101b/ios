@@ -19,13 +19,15 @@ class ViewController: UIViewController {
     let wifiNotification = NSNotification.Name("wifiNotification")
     let reachability = Reachability()!
     var wifiname: String = ""
-    var wi2LoginFlag = false
-    var wi2LogoutFlag = false
+    var loginFlag = false
+    var logoutFlag = false
+    var pushLogoutFlag = false
+    
     
     override func viewDidLoad() {
         super.viewDidLoad()
         // 0.3杪ごとにSSIDの変化を監視
-        Timer.scheduledTimer(timeInterval: 1.0, target: self, selector: #selector(self.getWiFiName), userInfo: nil, repeats: true)
+        Timer.scheduledTimer(timeInterval: 2, target: self, selector: #selector(self.getWiFiName), userInfo: nil, repeats: true)
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -55,7 +57,7 @@ class ViewController: UIViewController {
         } else {
             wifiName.text = "なし"
             print("no wifi name")
-            wi2LogoutFlag = false
+            pushLogoutFlag = false
             return
         }
     }
@@ -63,13 +65,19 @@ class ViewController: UIViewController {
     // 現在接続中のwifiが "wi2premium"であればWifi接続メソッドを投げる
     func wifiControl(){
         print("wifiname: \(wifiname)")
-        print("wi2Loginflag:\(wi2LoginFlag)")
-        print("wi2Logoutflag: \(wi2LogoutFlag)")
+        print("Loginflag:\(loginFlag)")
+        print("Logoutflag:\(logoutFlag)")
+        print("wi2Logoutflag: \(pushLogoutFlag)")
         
         if wifiname == "Wi2premium" { //　Wi2premiumのWifiに接続認証処理待ち、Wi2premiumログイン未処理 → ログイン
-            if wi2LoginFlag == false {
-                if wi2LogoutFlag == true { //　Wi2premiumのWifiに接続認証処理待ち、ログアウト済み
-                    print("============= This is Wi2premium, after Logout")
+            if loginFlag == false {
+                if pushLogoutFlag == true { //　Wi2premiumのWifiに接続認証処理待、手動ログアウト済み
+                    if logoutFlag == true {
+                        wi2Login()
+                        print("============== Connect Wi2Wifi =================")
+                        return
+                    }
+                    print("============= This is Wi2premium, after push '接続解除'")
                     return
                 }
                 wi2Login()
@@ -79,7 +87,7 @@ class ViewController: UIViewController {
             print("============== Do not execute wi2Login(), Now Connecting 'Wi2premium' ==================")
             return
         }else { // Wi2以外のネットワーク
-            if wi2LoginFlag == true { // Wi2ログアウト未処理　→ ログアウト
+            if loginFlag == true { // Wi2ログアウト未処理　→ ログアウト
                 print("============== This is not Wi2premium =================")
                 print("============== Logout Wi2WiFi ==============")
                 wi2Logout()
@@ -136,8 +144,9 @@ class ViewController: UIViewController {
                     }
             }
         }
-        wi2LoginFlag = true
-        wi2LogoutFlag = false
+        loginFlag = true
+        logoutFlag = false
+        pushLogoutFlag = false
     }
     
     // WiFi接続解除通信
@@ -154,7 +163,8 @@ class ViewController: UIViewController {
                 print("JSON: \(JSON)")
             }
         }
-        wi2LoginFlag = false
+        loginFlag = false
+        logoutFlag = true
     }
 
     // 接続ネットワークを探す
@@ -164,11 +174,14 @@ class ViewController: UIViewController {
         if reachability.isReachable {
             if reachability.isReachableViaWiFi {
                 networkName.text = "WiFi"
+                print("WIFI")
             } else {
                 networkName.text = "LTE/3G"
+                print("LTE/3G")
             }
         } else {
             networkName.text = "なし"
+            print("なし")
         }
     }
     
@@ -202,8 +215,8 @@ class ViewController: UIViewController {
     }
     //  "接続解除を押した時の処理"
     @IBAction func disConnectWiFi(_ sender: Any) {
-        wi2LogoutFlag = true
         wi2Logout()
+        pushLogoutFlag = true
     }
 }
 
