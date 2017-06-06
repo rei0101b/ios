@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Scheme
-   LastUpgradeVersion = "0830"
+   LastUpgradeVersion = "0700"
    version = "1.3">
    <BuildAction
       parallelizeBuildables = "YES"
@@ -14,10 +14,10 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "3364191B1EE67A92002AE942"
-               BuildableName = "add_pushNotification.app"
-               BlueprintName = "add_pushNotification"
-               ReferencedContainer = "container:add_pushNotification.xcodeproj">
+               BlueprintIdentifier = "DCFF23EB7D973021992FFC7FDC9AE30E"
+               BuildableName = "Pods_add_pushNotification.framework"
+               BlueprintName = "Pods-add_pushNotification"
+               ReferencedContainer = "container:Pods.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -29,15 +29,6 @@
       shouldUseLaunchSchemeArgsEnv = "YES">
       <Testables>
       </Testables>
-      <MacroExpansion>
-         <BuildableReference
-            BuildableIdentifier = "primary"
-            BlueprintIdentifier = "3364191B1EE67A92002AE942"
-            BuildableName = "add_pushNotification.app"
-            BlueprintName = "add_pushNotification"
-            ReferencedContainer = "container:add_pushNotification.xcodeproj">
-         </BuildableReference>
-      </MacroExpansion>
       <AdditionalOptions>
       </AdditionalOptions>
    </TestAction>
@@ -51,16 +42,15 @@
       debugDocumentVersioning = "YES"
       debugServiceExtension = "internal"
       allowLocationSimulation = "YES">
-      <BuildableProductRunnable
-         runnableDebuggingMode = "0">
+      <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "3364191B1EE67A92002AE942"
-            BuildableName = "add_pushNotification.app"
-            BlueprintName = "add_pushNotification"
-            ReferencedContainer = "container:add_pushNotification.xcodeproj">
+            BlueprintIdentifier = "DCFF23EB7D973021992FFC7FDC9AE30E"
+            BuildableName = "Pods_add_pushNotification.framework"
+            BlueprintName = "Pods-add_pushNotification"
+            ReferencedContainer = "container:Pods.xcodeproj">
          </BuildableReference>
-      </BuildableProductRunnable>
+      </MacroExpansion>
       <AdditionalOptions>
       </AdditionalOptions>
    </LaunchAction>
@@ -70,16 +60,6 @@
       savedToolIdentifier = ""
       useCustomWorkingDirectory = "NO"
       debugDocumentVersioning = "YES">
-      <BuildableProductRunnable
-         runnableDebuggingMode = "0">
-         <BuildableReference
-            BuildableIdentifier = "primary"
-            BlueprintIdentifier = "3364191B1EE67A92002AE942"
-            BuildableName = "add_pushNotification.app"
-            BlueprintName = "add_pushNotification"
-            ReferencedContainer = "container:add_pushNotification.xcodeproj">
-         </BuildableReference>
-      </BuildableProductRunnable>
    </ProfileAction>
    <AnalyzeAction
       buildConfiguration = "Debug">

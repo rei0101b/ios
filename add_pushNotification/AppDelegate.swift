@@ -7,17 +7,68 @@
 //
 
 import UIKit
+import UserNotifications
+import NCMB
 
 @UIApplicationMain
-class AppDelegate: UIResponder, UIApplicationDelegate {
+class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterDelegate {
 
     var window: UIWindow?
+    let applicationkey = "b42cb044b7a364a912772128637a89f2cf5a2bf280a834a05ff45351fcb58a17"
+    let clientkey = "da960ebee20d5dd237fed802f6a65cf6d447be2aeca5e8f63d08655b9d083ba2"
 
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
-        // Override point for customization after application launch.
+        // NCMB SDKの初期化
+        NCMB.setApplicationKey(applicationkey, clientKey: clientkey)
+        
+        // デバイストークンの要求
+        if #available(iOS 10.0, *){
+            /** iOS10以上 **/
+            let center = UNUserNotificationCenter.current()
+            center.requestAuthorization(options: [.alert, .badge, .sound]) {granted, error in
+                if error != nil {
+                    // エラー時の処理
+                    print("=========== Error to take token: \(String(describing: error))===============")
+                    return
+                }
+                if granted {
+                    // デバイストークンの要求
+                    UIApplication.shared.registerForRemoteNotifications()
+                }
+            }
+        } else {
+            /** iOS8以上iOS10未満 **/
+            //通知のタイプを設定したsettingを用意
+            let setting = UIUserNotificationSettings(types: [.alert, .badge, .sound], categories: nil)
+            //通知のタイプを設定
+            application.registerUserNotificationSettings(setting)
+            //DevoceTokenを要求
+            UIApplication.shared.registerForRemoteNotifications()
+        }
+        
         return true
     }
+    
+    // デバイストークンが取得されたら呼び出されるメソッド
+    func application(_ application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data) {
+        // 端末情報を扱うNCMBInstallationのインスタンスを作成
+        let installation : NCMBInstallation = NCMBInstallation.current()
+        // デバイストークンの設定
+        installation.setDeviceTokenFrom(deviceToken)
+        print("== deviceToken\(deviceToken)")
+        // 端末情報をデータストアに登録
+        installation.saveInBackground {error in
+            if error != nil {
+                // 端末情報の登録に失敗した時の処理
+                print("===== Can not register \(String(describing: error))")
+            } else {
+                // 端末情報の登録に成功した時の処理
+                print("===== Success to register of deviceInfo")
+            }
+        }
+    }
+
 
     func applicationWillResignActive(_ application: UIApplication) {
         // Sent when the application is about to move from active to inactive state. This can occur for certain types of temporary interruptions (such as an incoming phone call or SMS message) or when the user quits the application and it begins the transition to the background state.
