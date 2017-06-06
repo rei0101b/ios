@@ -23,10 +23,9 @@ class ViewController: UIViewController {
     var logoutFlag = false
     var pushLogoutFlag = false
     
-    
     override func viewDidLoad() {
         super.viewDidLoad()
-        // 0.3杪ごとにSSIDの変化を監視
+        // 2.0杪ごとにSSIDの変化を監視
         Timer.scheduledTimer(timeInterval: 2.0, target: self, selector: #selector(self.getWiFiName), userInfo: nil, repeats: true)
     }
     
@@ -34,13 +33,11 @@ class ViewController: UIViewController {
         NotificationCenter.default.addObserver(self, selector: #selector(self.reachabilityChanged), name: ReachabilityChangedNotification, object: reachability)
         do {
             try reachability.startNotifier()
-//            getWiFiName()
         } catch {
             print("could not start reachability notifier")
         }
         getWiFiName()
     }
-
 
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
@@ -74,24 +71,6 @@ class ViewController: UIViewController {
         print("pushLogoutflag: \(pushLogoutFlag)")
         print("Logoutflag:\(logoutFlag)")
         
-        
-//        if wifiname == "Wi2premium" { //　Wi2premiumのWifiに接続認証処理待ち、Wi2premiumログイン未処理 → ログイン
-//            if loginFlag == false {
-//                if pushLogoutFlag == true { //　Wi2premiumのWifiに接続認証処理待、手動ログアウト済み
-//                    if logoutFlag == true {
-//                        wi2Login()
-//                        print("============== Connect Wi2Wifi =================")
-//                        return
-//                    }
-//                    print("============= This is Wi2premium, after push '接続解除'")
-//                    return
-//                }
-//                wi2Login()
-//                print("============== Connect Wi2Wifi =================")
-//                return
-//            }
-//            print("============== Do not execute wi2Login(), Now Connecting 'Wi2premium' ==================")
-//            return
         if wifiname == "Wi2premium" {
             if loginFlag == false {
                 if logoutFlag == true {
@@ -141,18 +120,20 @@ class ViewController: UIViewController {
         let COOKIE_URL = "https://service.wi2.ne.jp/wi2auth/odakyu/index.html"
         let cookie_url = URL(string: COOKIE_URL)
         Alamofire.request(COOKIE_URL, method: .get).responseJSON { response -> Void in
-            let res = response.response
+            // エラー処理
+            guard let res = response.response else{
+                print("Can not catch response from API")
+                return
+            }
             // Cookie保存
             print("res: \(String(describing: res))")
-            let get_cookies = HTTPCookie.cookies(withResponseHeaderFields: res?.allHeaderFields as! [String : String], for: (res?.url)! )
-            
+            let get_cookies = HTTPCookie.cookies(withResponseHeaderFields: res.allHeaderFields as! [String : String], for: (res.url)! )
             for i in 0 ..< get_cookies.count {
                 let cookie = get_cookies[i]
                 
                 HTTPCookieStorage.shared.setCookie(cookie)
                 print("Cookies\(i): \(cookie)")
             }
-            
             // Cookieを渡す
             let AUTH_URL = "https://service.wi2.ne.jp/wi2auth/xhr/login"
             let cookies = HTTPCookieStorage.shared.cookies(for: cookie_url! as URL)
